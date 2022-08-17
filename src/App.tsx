@@ -9,6 +9,7 @@ const App: React.FC = () => {
         gapi.client.calendar.CalendarListEntry[] | null | undefined
     >(null)
 
+    console.log('calendars in app: ', calendars)
     const setNewCalendars = (
         newCalendars: gapi.client.calendar.CalendarListEntry[]
     ): void => {
