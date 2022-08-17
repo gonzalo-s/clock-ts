@@ -1,14 +1,18 @@
 import React from 'react'
 import { gapi } from 'gapi-script'
 import { useState } from 'react'
-import { CalendarItems } from '../types/googleTypes'
 
-const GoogleSign = () => {
+interface props {
+    setNewCalendars: (
+        newCalendars: gapi.client.calendar.CalendarListEntry[]
+    ) => void
+}
+
+const GoogleSign = (props: props) => {
+    const { setNewCalendars } = props
+
     const [isSignedIn, setIsSignedIn] = useState(false)
-    const [calendars, setCalendars] = useState<
-        CalendarItems[] | null | undefined
-    >(null)
-    console.log(calendars)
+
     async function authenticate() {
         try {
             const authResponse = await gapi.auth2.getAuthInstance().signIn({
@@ -60,7 +64,7 @@ const GoogleSign = () => {
             await loadClient()
             console.log('loadClient awaited')
             const newCalendars = await getCalendarList()
-            setCalendars(newCalendars)
+            if (newCalendars) setNewCalendars(newCalendars.items)
         } catch (error) {
             throw Error(`Error initializing gapi client: ${error}`)
         }

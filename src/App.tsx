@@ -1,13 +1,24 @@
+import { useState } from 'react'
 import Clock from './components/Clock'
 import GoogleSign from './components/GoogleSign'
 import Weather from './components/Weather'
 import './styles/app.css'
 
-function App() {
+const App: React.FC = () => {
+    const [calendars, setCalendars] = useState<
+        gapi.client.calendar.CalendarListEntry[] | null | undefined
+    >(null)
+
+    const setNewCalendars = (
+        newCalendars: gapi.client.calendar.CalendarListEntry[]
+    ): void => {
+        setCalendars(newCalendars)
+    }
+
     return (
         <div className="app">
             <div className="app__wrapper">
-                <GoogleSign />
+                <GoogleSign setNewCalendars={setNewCalendars} />
                 <Clock />
                 <Weather />
             </div>
