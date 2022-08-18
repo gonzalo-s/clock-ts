@@ -1,15 +1,10 @@
 import React from 'react'
 import { gapi } from 'gapi-script'
 import { useState } from 'react'
+import { useStoreContext } from '../StoreContext'
 
-interface props {
-    setNewCalendars: (
-        newCalendars: gapi.client.calendar.CalendarListEntry[]
-    ) => void
-}
-
-const GoogleSign = (props: props) => {
-    const { setNewCalendars } = props
+const GoogleSign = () => {
+    const { setCalendarsList } = useStoreContext()
 
     const [isSignedIn, setIsSignedIn] = useState(false)
 
@@ -64,7 +59,7 @@ const GoogleSign = (props: props) => {
             await loadClient()
             console.log('loadClient awaited')
             const newCalendars = await getCalendarList()
-            if (newCalendars) setNewCalendars(newCalendars.items)
+            if (newCalendars) setCalendarsList(newCalendars.items)
         } catch (error) {
             throw Error(`Error initializing gapi client: ${error}`)
         }

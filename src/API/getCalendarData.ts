@@ -22,7 +22,7 @@ export const getCalendarData = async (calendarId: string) => {
             timeMin: today.toISOString(),
             timeMax: plusTen.toISOString(),
         })
-        console.log('getCalendarData Response', data.result)
+        return data.result
     } catch (err) {
         console.error('getCalendarData error', err)
     }
