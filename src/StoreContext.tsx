@@ -8,6 +8,10 @@ interface Context {
     selectedCalendarId: string
     selectCalendar: (calendarId: string) => void
     resetCalendars: () => void
+    setNewCalendarData: (calendarData: gapi.client.calendar.Event[]) => void
+    getIsSignedInStatus: (status: boolean) => void
+    isSignedIn: boolean
+    calendarData: gapi.client.calendar.Event[] | undefined
 }
 
 const StoreContext = React.createContext<Context>({
@@ -16,6 +20,10 @@ const StoreContext = React.createContext<Context>({
     selectedCalendarId: '',
     selectCalendar: () => {},
     resetCalendars: () => {},
+    setNewCalendarData: () => {},
+    getIsSignedInStatus: () => {},
+    isSignedIn: false,
+    calendarData: undefined,
 })
 
 export function useStoreContext() {
@@ -29,6 +37,17 @@ export function StoreProvider({ children }: any) {
 
     const [selectedCalendarId, setSelectedCalendarId] = useState('')
 
+    const [calendarData, setCalendarData] =
+        useState<gapi.client.calendar.Event[]>()
+
+    const [isSignedIn, setIsSignedIn] = useState(false)
+
+    // ! END of useState
+
+    const setNewCalendarData = (calendarData: gapi.client.calendar.Event[]) => {
+        setCalendarData(calendarData)
+    }
+
     const selectCalendar = (calendarId: string) => {
         setSelectedCalendarId(calendarId)
     }
@@ -39,7 +58,12 @@ export function StoreProvider({ children }: any) {
         setCalendars(newCalendarsList)
     }
     const resetCalendars = () => {
+        console.log('reset calendars')
         setCalendars(null)
+    }
+
+    const getIsSignedInStatus = (status: boolean) => {
+        setIsSignedIn(status)
     }
 
     return (
@@ -50,6 +74,10 @@ export function StoreProvider({ children }: any) {
                 selectedCalendarId,
                 selectCalendar,
                 resetCalendars,
+                setNewCalendarData,
+                getIsSignedInStatus,
+                isSignedIn,
+                calendarData,
             }}
         >
             {children}

@@ -1,4 +1,39 @@
 .calendarView {
     display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 25%;
     border: 1px solid black;
+}
+.calendar__list__wrapper {
+    display: flex;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.calendar__item__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    height: 100%;
+}
+.calendar__item__btn {
+    display: inline-block;
+    outline: 0;
+    cursor: pointer;
+    border: 1px solid #1d1c1d4d;
+    font-weight: 700;
+    background: #fff;
+    padding: 0 8px 1px;
+    font-size: 13px;
+    border-radius: 4px;
+    color: rgb(29, 28, 29);
+    height: 28px;
+    min-width: 56px;
+    transition: all 80ms linear;
+}
+.calendar__item__btn:hover {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 8%);
+    background: rgba(248, 248, 248, 1);
 }

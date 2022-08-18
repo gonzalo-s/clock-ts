@@ -2,18 +2,17 @@ import React from 'react'
 import { gapi } from 'gapi-script'
 import { useState } from 'react'
 import { useStoreContext } from '../StoreContext'
+import GoogleButton from 'react-google-button'
 
 const GoogleSign = () => {
-    const { setCalendarsList } = useStoreContext()
-
-    const [isSignedIn, setIsSignedIn] = useState(false)
+    const { getIsSignedInStatus, setCalendarsList } = useStoreContext()
 
     async function authenticate() {
         try {
             const authResponse = await gapi.auth2.getAuthInstance().signIn({
                 scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
             })
-            setIsSignedIn(authResponse.isSignedIn())
+            getIsSignedInStatus(authResponse.isSignedIn())
         } catch (error) {
             console.log('authenticate error: ', error)
         }
@@ -55,9 +54,7 @@ const GoogleSign = () => {
                 gapi.load('client:auth2', resolve)
             })
             await authenticate()
-            console.log('aithenticated awaited')
             await loadClient()
-            console.log('loadClient awaited')
             const newCalendars = await getCalendarList()
             if (newCalendars) setCalendarsList(newCalendars.items)
         } catch (error) {
@@ -67,12 +64,7 @@ const GoogleSign = () => {
 
     return (
         <div>
-            GoogleSign
-            <div>{isSignedIn ? 'Logged' : 'Not Logged'}</div>
-            <button onClick={authenticate}>authorize</button>
-            <button onClick={loadClient}>loadClient</button>
-            <button onClick={getCalendarList}>getCalendarList</button>
-            <button onClick={loadGapi}>LOADGAPI</button>
+            <GoogleButton onClick={loadGapi}>SignIn</GoogleButton>
         </div>
     )
 }

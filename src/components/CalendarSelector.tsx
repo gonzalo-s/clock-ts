@@ -1,16 +1,23 @@
 import React from 'react'
 import { getCalendarData } from '../API/getCalendarData'
 import { useStoreContext } from '../StoreContext'
+import '../styles/calendarView.css'
 
 const CalendarSelector = (): JSX.Element => {
-    const { calendars, selectCalendar, resetCalendars } = useStoreContext()
-    console.log(calendars)
-    const handleOnCLick = (calendarId: string) => {
-        console.log('calendarId in handleOnClick: ', calendarId)
-        getCalendarData(calendarId)
-        selectCalendar(calendarId)
-        resetCalendars()
+    const { calendars, resetCalendars, setNewCalendarData } = useStoreContext()
+
+    const getDataFirstAndResetCalendars = async (calendarId: string) => {
+        const newData = await getCalendarData(calendarId)
+        if (newData) {
+            console.log('got newCalendarData')
+            setNewCalendarData(newData)
+            resetCalendars()
+        }
     }
+    const handleOnCLick = (calendarId: string) => {
+        getDataFirstAndResetCalendars(calendarId)
+    }
+
     return (
         <div>
             {calendars !== null ? (

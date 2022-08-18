@@ -1,6 +1,6 @@
 interface DateRange {
-    today: Date
-    plusTen: Date
+    today: string
+    plusTen: string
 }
 
 const formatDateRange = (): DateRange => {
@@ -8,8 +8,8 @@ const formatDateRange = (): DateRange => {
     const plusTen = new Date()
     plusTen.setDate(today.getDate() + 10)
     return {
-        today,
-        plusTen,
+        today: today.toISOString(),
+        plusTen: plusTen.toISOString(),
     }
 }
 
@@ -19,10 +19,12 @@ export const getCalendarData = async (calendarId: string) => {
     try {
         const data = await gapi.client.calendar.events.list({
             calendarId: calendarId,
-            timeMin: today.toISOString(),
-            timeMax: plusTen.toISOString(),
+            timeMin: today,
+            timeMax: plusTen,
+            singleEvents: true,
+            orderBy: 'startTime',
         })
-        return data.result
+        return data.result.items
     } catch (err) {
         console.error('getCalendarData error', err)
     }
