@@ -26,6 +26,6 @@ export const getCalendarData = async (calendarId: string) => {
         })
         return data.result.items
     } catch (err) {
-        console.error('getCalendarData error', err)
+        console.error('getCalendarData error__:_', err)
     }
 }

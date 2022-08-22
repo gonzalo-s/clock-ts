@@ -3,9 +3,15 @@ import { gapi } from 'gapi-script'
 import { useState } from 'react'
 import { useStoreContext } from '../StoreContext'
 import GoogleButton from 'react-google-button'
+import * as googleSignAction from '../state/action-creators/googleSignAction'
+import { bindActionCreators } from '@reduxjs/toolkit'
+import { useDispatch } from 'react-redux'
 
 const GoogleSign = () => {
     const { getIsSignedInStatus, setCalendarsList } = useStoreContext()
+    const dispatch = useDispatch()
+
+    const { startSignIn } = bindActionCreators(googleSignAction, dispatch)
 
     async function authenticate() {
         try {
@@ -64,7 +70,14 @@ const GoogleSign = () => {
 
     return (
         <div>
-            <GoogleButton onClick={loadGapi}>SignIn</GoogleButton>
+            <GoogleButton
+                onClick={() => {
+                    console.log('loadGapi')
+                    startSignIn()
+                }}
+            >
+                SignIn
+            </GoogleButton>
         </div>
     )
 }

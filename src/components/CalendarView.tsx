@@ -6,7 +6,7 @@ import { useStoreContext } from '../StoreContext'
 
 const CalendarView = () => {
     const { isSignedIn, calendarData } = useStoreContext()
-    console.log(calendarData)
+    //console.log(calendarData)
     return (
         <div className="calendarView">
             {isSignedIn ? <CalendarSelector /> : <GoogleSign />}
