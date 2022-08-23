@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react'
-import '../styles/clock.css'
 import TimeDisplay from './TimeDisplay'
-import { useStoreContext } from '../StoreContext'
-import { getCalendarData } from '../API/getCalendarData'
 import { bindActionCreators } from 'redux'
 import { actionCreators } from '../state'
 import { useDispatch, useSelector } from 'react-redux'
 import { State } from '../state/reducers'
+import '../styles/clock.css'
 export interface IClockProps {}
 
 const Clock = (props: IClockProps) => {
-    const { isSignedIn, selectedCalendarId } = useStoreContext()
     const dispatch = useDispatch()
     const { hh, mm, ss } = useSelector((store: State) => store.clock)
 
@@ -35,14 +32,6 @@ const Clock = (props: IClockProps) => {
             clearInterval(getTime)
         }
     }, [updateTime])
-
-    useEffect(() => {
-        console.log('paso un minuto')
-        // todo Check if first item in calendar is near
-        if (isSignedIn) {
-            getCalendarData(selectedCalendarId)
-        }
-    }, [selectedCalendarId, mm, isSignedIn])
 
     return (
         <div className="clock">

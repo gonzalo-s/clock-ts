@@ -2,7 +2,6 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { State } from '../state/reducers'
 import '../styles/calendarElements.css'
-import { getCalendarData } from '../state/action-creators/calendarElementsAction'
 const CalendarElements = (): JSX.Element => {
     const { selectedCalendarElements } = useSelector(
         (store: State) => store.calendars
