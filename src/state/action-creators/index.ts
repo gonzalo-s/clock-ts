@@ -1,11 +1,11 @@
 import { Dispatch } from 'react'
-import { ActionType } from '../types/actionTypes'
-import { Action, NewTime } from '../types/actionTypes'
+import { ActionClock, ClockTypes } from '../types/clockTypes'
+import { NewTime } from '../types/clockTypes'
 
 export const updateTime = (newTime: NewTime) => {
-    return (dispatch: Dispatch<Action>) => {
+    return (dispatch: Dispatch<ActionClock>) => {
         dispatch({
-            type: ActionType.UPDATETIME,
+            type: ClockTypes.UPDATE_TIME,
             payload: newTime,
         })
     }

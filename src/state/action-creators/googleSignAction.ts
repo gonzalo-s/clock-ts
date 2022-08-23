@@ -1,13 +1,39 @@
 import { Dispatch } from 'react'
-import { GoogleApiTypes, GoogleSignIn } from '../types/actionTypes'
+import { GoogleApiTypes, GoogleSignInDispatch } from '../types/googleTypes'
+import { gapi } from 'gapi-script'
+import { CalendarTypes, CalendarDispatch } from '../types/calendarTypes'
 
-async function authenticate() {
+const googleSignInStarted = () => {
+    return { type: GoogleApiTypes.GOOGLE_SIGN_IN_STARTED }
+}
+const isSignedStatus = (status: Boolean) => {
+    return {
+        type: GoogleApiTypes.IS_SIGNED_STATUS,
+        payload: status,
+    }
+}
+const signError = () => {
+    return {
+        type: GoogleApiTypes.SIGN_ERROR,
+    }
+}
+
+const updateCalendars = (
+    calendars: gapi.client.calendar.CalendarListEntry[]
+) => {
+    return {
+        type: CalendarTypes.UPDATE_CALENDARS,
+        payload: calendars,
+    }
+}
+
+async function authenticate(dispatch: Dispatch<GoogleSignInDispatch>) {
     try {
         const authResponse = await gapi.auth2.getAuthInstance().signIn({
             scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
         })
         console.log('Authenticate_async_function: ', authResponse)
-        //getIsSignedInStatus(authResponse.isSignedIn())
+        dispatch(isSignedStatus(authResponse.isSignedIn()))
     } catch (error) {
         console.log('authenticate error: ', error)
     }
@@ -24,13 +50,18 @@ async function loadClient() {
     }
 }
 // Make sure the client is loaded and sign-in is complete before calling this method.
-async function getCalendarList() {
+async function getCalendarList(dispatch: Dispatch<CalendarDispatch>) {
     try {
-        const result = await gapi.client.calendar.calendarList.list({
-            maxResults: 15,
-            showDeleted: false,
-        })
-        return result.result
+        await gapi.client.calendar.calendarList
+            .list({
+                maxResults: 15,
+                showDeleted: false,
+            })
+            .then((res) => {
+                const calendarList = res.result.items
+                //console.log(calendarList)
+                dispatch(updateCalendars(calendarList))
+            })
     } catch (error) {
         console.log('error getting calendar list: ', error)
     }
@@ -43,27 +74,27 @@ gapi.load('client:auth2', () => {
     })
 })
 
-const googleSignInStarted = () => ({
-    type: GoogleApiTypes.GOOGLESIGNINSTARTED,
-})
-
 export const startSignIn = () => {
-    const loadGapi = async () => {
+    const loadGapi = async (
+        dispatch: Dispatch<GoogleSignInDispatch | CalendarDispatch>
+    ) => {
         try {
+            dispatch(googleSignInStarted())
             await new Promise((resolve, reject) => {
                 gapi.load('client:auth2', resolve)
             })
-            await authenticate()
+            await authenticate(dispatch)
             await loadClient()
             console.log('loadClient AWAITED')
-            // const newCalendars = await getCalendarList()
+            await getCalendarList(dispatch)
+
             // if (newCalendars) setCalendarsList(newCalendars.items)
         } catch (error) {
+            dispatch(signError())
             throw Error(`Error initializing gapi client: ${error}`)
         }
     }
-    return (dispatch: Dispatch<GoogleSignIn>) => {
-        dispatch(googleSignInStarted())
-        loadGapi()
+    return (dispatch: Dispatch<GoogleSignInDispatch | CalendarDispatch>) => {
+        loadGapi(dispatch)
     }
 }

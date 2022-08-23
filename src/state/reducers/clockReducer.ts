@@ -1,4 +1,4 @@
-import { Action, ActionType } from '../types/actionTypes'
+import { ClockTypes, ActionClock } from '../types/clockTypes'
 
 interface State {
     hh: String
@@ -8,9 +8,9 @@ interface State {
 }
 const initialState = { hh: '00', mm: '00', ss: '00', date: '' }
 
-const reducer = (state: State = initialState, action: Action) => {
+const reducer = (state: State = initialState, action: ActionClock) => {
     switch (action.type) {
-        case ActionType.UPDATETIME:
+        case ClockTypes.UPDATE_TIME:
             const newTime = action.payload
             //console.log(newTime)
 

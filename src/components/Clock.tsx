@@ -10,12 +10,11 @@ import { State } from '../state/reducers'
 export interface IClockProps {}
 
 const Clock = (props: IClockProps) => {
-    const { isSignedIn, calendarData, selectedCalendarId } = useStoreContext()
+    const { isSignedIn, selectedCalendarId } = useStoreContext()
     const dispatch = useDispatch()
     const { hh, mm, ss } = useSelector((store: State) => store.clock)
 
     const { updateTime } = bindActionCreators(actionCreators, dispatch)
-    console.log(calendarData ? calendarData : 'no calendar')
 
     const numToStrFormatter = (number: Number): String => {
         return number <= 9 ? '0' + number : number.toString()

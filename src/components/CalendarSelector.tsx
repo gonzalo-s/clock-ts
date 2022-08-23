@@ -1,19 +1,18 @@
-import React from 'react'
-import { getCalendarData } from '../API/getCalendarData'
-import { useStoreContext } from '../StoreContext'
+import { bindActionCreators } from '@reduxjs/toolkit'
+import { useDispatch, useSelector } from 'react-redux'
+import { State } from '../state/reducers'
 import '../styles/calendarView.css'
+import * as calendarElementsAction from '../state/action-creators/calendarElementsAction'
 
 const CalendarSelector = (): JSX.Element => {
-    const { calendars, resetCalendars, setNewCalendarData } = useStoreContext()
+    const { calendars } = useSelector((store: State) => store.calendars)
 
-    const getDataFirstAndResetCalendars = async (calendarId: string) => {
-        const newData = await getCalendarData(calendarId)
-        if (newData) {
-            console.log('got newCalendarData')
-            setNewCalendarData(newData)
-            resetCalendars()
-        }
-    }
+    const dispatch = useDispatch()
+    const { getDataFirstAndResetCalendars } = bindActionCreators(
+        calendarElementsAction,
+        dispatch
+    )
+
     const handleOnCLick = (calendarId: string) => {
         getDataFirstAndResetCalendars(calendarId)
     }

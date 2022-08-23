@@ -2,15 +2,27 @@ import React from 'react'
 import CalendarSelector from './CalendarSelector'
 import GoogleSign from './GoogleSign'
 import '../styles/calendarView.css'
-import { useStoreContext } from '../StoreContext'
+import { useSelector } from 'react-redux'
+import { State } from '../state/reducers/index'
+import { SignStatus } from '../state/types/googleTypes'
+import CalendarElements from './CalendarElements'
 
 const CalendarView = () => {
-    const { isSignedIn, calendarData } = useStoreContext()
-    //console.log(calendarData)
+    const { signStatus } = useSelector((store: State) => store.googleSignIn)
+    const { selectedCalendarElements } = useSelector(
+        (store: State) => store.calendars
+    )
+
+    console.log(selectedCalendarElements)
+
     return (
         <div className="calendarView">
-            {isSignedIn ? <CalendarSelector /> : <GoogleSign />}
-            {!!calendarData ? <div>{calendarData[0]?.summary}</div> : ''}
+            {signStatus === SignStatus.SIGNED_IN ? (
+                <CalendarSelector />
+            ) : (
+                <GoogleSign />
+            )}
+            <CalendarElements />
         </div>
     )
 }

@@ -1,22 +1,28 @@
-import { Action, GoogleApiTypes } from '../types/actionTypes'
+import {
+    ActionGoogleSign,
+    GoogleApiTypes,
+    SignStatus,
+} from '../types/googleTypes'
 
 interface State {
     signStatus: SignStatus
 }
 
-enum SignStatus {
-    SIGNING_IN = 'Signing_In',
-    SIGNED_IN = 'Signed_In',
-    SIGNING_OUT = 'Signing_Out',
-    SIGNED_OUT = 'Signed_Out',
-}
-
 const initialState = { signStatus: SignStatus.SIGNED_OUT }
 
-const reducer = (state: State = initialState, action: Action) => {
+const reducer = (state: State = initialState, action: ActionGoogleSign) => {
     switch (action.type) {
-        case GoogleApiTypes.GOOGLESIGNINSTARTED:
+        case GoogleApiTypes.GOOGLE_SIGN_IN_STARTED:
             return { signStatus: SignStatus.SIGNING_IN }
+        case GoogleApiTypes.IS_SIGNED_STATUS:
+            const actualState = action.payload
+                ? SignStatus.SIGNED_IN
+                : SignStatus.SIGNED_OUT
+
+            return { signStatus: actualState }
+        case GoogleApiTypes.SIGN_ERROR:
+            return { signStatus: SignStatus.SIGN_ERROR }
+
         default:
             return state
     }
