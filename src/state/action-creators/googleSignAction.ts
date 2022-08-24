@@ -2,6 +2,12 @@ import { Dispatch } from 'react'
 import { GoogleApiTypes, GoogleSignInDispatch } from '../types/googleTypes'
 import { gapi } from 'gapi-script'
 import { CalendarTypes, CalendarDispatch } from '../types/calendarTypes'
+import {
+    UserDispatch,
+    UserTypes,
+    ActionUser,
+    BasicProfile,
+} from '../types/userTypes'
 
 const googleSignInStarted = () => {
     return { type: GoogleApiTypes.GOOGLE_SIGN_IN_STARTED }
@@ -27,12 +33,35 @@ const updateCalendars = (
     }
 }
 
-async function authenticate(dispatch: Dispatch<GoogleSignInDispatch>) {
+const updateUserData = (accessToken: String, basicProfile: BasicProfile) => {
+    return {
+        type: UserTypes.UPDATE_USER_DATA,
+        payload: { accessToken, basicProfile },
+    }
+}
+
+async function authenticate(
+    dispatch: Dispatch<GoogleSignInDispatch | UserDispatch>
+) {
     try {
         const authResponse = await gapi.auth2.getAuthInstance().signIn({
             scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
         })
         console.log('Authenticate_async_function: ', authResponse)
+        console.log(authResponse.getBasicProfile())
+        const accessToken = authResponse.getAuthResponse().access_token
+        const profile = authResponse.getBasicProfile()
+        const basicProfile = {
+            id: profile.getId(),
+            fullName: profile.getName(),
+            givenName: profile.getGivenName(),
+            familyName: profile.getFamilyName(),
+            imageURL: profile.getImageUrl(),
+            email: profile.getEmail(),
+        }
+        dispatch(updateUserData(accessToken, basicProfile))
+        console.log(basicProfile)
+
         dispatch(isSignedStatus(authResponse.isSignedIn()))
     } catch (error) {
         console.log('authenticate error: ', error)
@@ -76,7 +105,9 @@ gapi.load('client:auth2', () => {
 
 export const startSignIn = () => {
     const loadGapi = async (
-        dispatch: Dispatch<GoogleSignInDispatch | CalendarDispatch>
+        dispatch: Dispatch<
+            GoogleSignInDispatch | CalendarDispatch | UserDispatch
+        >
     ) => {
         try {
             dispatch(googleSignInStarted())
@@ -85,7 +116,6 @@ export const startSignIn = () => {
             })
             await authenticate(dispatch)
             await loadClient()
-            console.log('loadClient AWAITED')
             await getCalendarList(dispatch)
 
             // if (newCalendars) setCalendarsList(newCalendars.items)
@@ -94,7 +124,11 @@ export const startSignIn = () => {
             throw Error(`Error initializing gapi client: ${error}`)
         }
     }
-    return (dispatch: Dispatch<GoogleSignInDispatch | CalendarDispatch>) => {
+    return (
+        dispatch: Dispatch<
+            GoogleSignInDispatch | CalendarDispatch | UserDispatch
+        >
+    ) => {
         loadGapi(dispatch)
     }
 }

@@ -1,11 +1,6 @@
 import { Dispatch } from 'react'
-import { GoogleApiTypes, GoogleSignInDispatch } from '../types/googleTypes'
 import { gapi } from 'gapi-script'
-import {
-    CalendarElements,
-    CalendarElementsDispatch,
-    CalendarTypes,
-} from '../types/calendarTypes'
+import { CalendarElementsDispatch, CalendarTypes } from '../types/calendarTypes'
 
 interface DateRange {
     today: string
@@ -29,21 +24,7 @@ const setNewCalendarData = (calendarElements: gapi.client.calendar.Event[]) => {
     }
 }
 
-export const getDataFirstAndResetCalendars = (calendarId: string) => {
-    return async (dispatch: Dispatch<CalendarElementsDispatch>) => {
-        const newData = await getCalendarData(calendarId)
-
-        if (newData) {
-            dispatch(setNewCalendarData(newData))
-            console.log('got newCalendarData')
-            console.log('new data in getDataFirst...:_', newData)
-            //setNewCalendarData(newData)
-            //resetCalendars()
-        }
-    }
-}
-
-export const getCalendarData = async (calendarId: string) => {
+const getCalendarData = async (calendarId: string) => {
     const { today, plusTen } = formatDateRange()
 
     try {
@@ -57,5 +38,15 @@ export const getCalendarData = async (calendarId: string) => {
         return data.result.items
     } catch (err) {
         console.error('getCalendarData error__:_', err)
+    }
+}
+
+export const getDataFirstAndResetCalendars = (calendarId: string) => {
+    return async (dispatch: Dispatch<CalendarElementsDispatch>) => {
+        const newData = await getCalendarData(calendarId)
+
+        if (newData) {
+            dispatch(setNewCalendarData(newData))
+        }
     }
 }
