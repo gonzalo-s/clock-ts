@@ -2,12 +2,7 @@ import { Dispatch } from 'react'
 import { GoogleApiTypes, GoogleSignInDispatch } from '../types/googleTypes'
 import { gapi } from 'gapi-script'
 import { CalendarTypes, CalendarDispatch } from '../types/calendarTypes'
-import {
-    UserDispatch,
-    UserTypes,
-    ActionUser,
-    BasicProfile,
-} from '../types/userTypes'
+import { UserDispatch, UserTypes, BasicProfile } from '../types/userTypes'
 
 const googleSignInStarted = () => {
     return { type: GoogleApiTypes.GOOGLE_SIGN_IN_STARTED }
@@ -33,7 +28,7 @@ const updateCalendars = (
     }
 }
 
-const updateUserData = (accessToken: String, basicProfile: BasicProfile) => {
+const updateUserData = (accessToken: string, basicProfile: BasicProfile) => {
     return {
         type: UserTypes.UPDATE_USER_DATA,
         payload: { accessToken, basicProfile },
@@ -60,8 +55,6 @@ async function authenticate(
             email: profile.getEmail(),
         }
         dispatch(updateUserData(accessToken, basicProfile))
-        console.log(basicProfile)
-
         dispatch(isSignedStatus(authResponse.isSignedIn()))
     } catch (error) {
         console.log('authenticate error: ', error)
@@ -88,7 +81,6 @@ async function getCalendarList(dispatch: Dispatch<CalendarDispatch>) {
             })
             .then((res) => {
                 const calendarList = res.result.items
-                //console.log(calendarList)
                 dispatch(updateCalendars(calendarList))
             })
     } catch (error) {

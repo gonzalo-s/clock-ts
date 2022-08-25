@@ -7,15 +7,19 @@ interface State extends UserData {
 const reducer = (
     state: State = { isData: false, accessToken: '', basicProfile: null },
     action: ActionUser
-) => {
+): State => {
     switch (action.type) {
         case UserTypes.UPDATE_USER_DATA:
             console.log('payload: ', action.payload)
 
             return {
                 isData: true,
-                accessToken: action.payload?.accessToken,
-                basicProfile: action.payload?.basicProfile,
+                accessToken: action.payload
+                    ? action.payload?.accessToken
+                    : null,
+                basicProfile: action.payload
+                    ? action.payload?.basicProfile
+                    : null,
             }
 
         default:

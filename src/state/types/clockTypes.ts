@@ -4,12 +4,15 @@ export enum ClockTypes {
 
 export interface ActionClock {
     type: ClockTypes
-    payload: NewTime
+    payload: string
 }
 
 export interface NewTime {
-    hh: String
-    mm: String
-    ss: String
-    date: String
+    nowHh: string
+    nowMm: string
+    nowSs: string
+    nowYear: string
+    nowMonth: string
+    nowDate: string
+    nowFullTimeString: string
 }

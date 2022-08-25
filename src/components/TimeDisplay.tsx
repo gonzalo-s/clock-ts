@@ -1,7 +1,7 @@
 import React from 'react'
 
 type Props = {
-    time: String
+    time: string
 }
 
 const TimeDisplay = ({ time }: Props) => {

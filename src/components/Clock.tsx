@@ -9,23 +9,16 @@ export interface IClockProps {}
 
 const Clock = (props: IClockProps) => {
     const dispatch = useDispatch()
-    const { hh, mm, ss } = useSelector((store: State) => store.clock)
+    const { nowHh, nowMm, nowSs } = useSelector((store: State) => store.clock)
 
     const { updateTime } = bindActionCreators(actionCreators, dispatch)
 
-    const numToStrFormatter = (number: Number): String => {
-        return number <= 9 ? '0' + number : number.toString()
-    }
-
     useEffect(() => {
         const getTime = setInterval(() => {
-            const newTime: Date = new Date()
-            const date = newTime.toString()
-            const hh = numToStrFormatter(newTime.getHours())
-            const mm = numToStrFormatter(newTime.getMinutes())
-            const ss = numToStrFormatter(newTime.getSeconds())
-            const newState = { hh, mm, ss, date }
-            updateTime(newState)
+            const date = new Date()
+            const tzoffset = date.getTimezoneOffset() * 60000 //offset in milliseconds
+            const localISOTime = new Date(Date.now() - tzoffset).toISOString()
+            updateTime(localISOTime)
         }, 1000)
 
         return () => {
@@ -35,11 +28,11 @@ const Clock = (props: IClockProps) => {
 
     return (
         <div className="clock">
-            <TimeDisplay time={hh} />
+            <TimeDisplay time={nowHh} />
             :
-            <TimeDisplay time={mm} />
+            <TimeDisplay time={nowMm} />
             :
-            <TimeDisplay time={ss} />
+            <TimeDisplay time={nowSs} />
         </div>
     )
 }

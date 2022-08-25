@@ -9,7 +9,7 @@ export interface ActionUser {
 }
 
 export interface UserData {
-    accessToken: String
+    accessToken: string | null
     basicProfile: BasicProfile | null
 }
 
@@ -18,10 +18,10 @@ export type UserDispatch = {
 }
 
 export interface BasicProfile {
-    id: String
-    fullName: String
-    givenName: String
-    familyName: String
-    imageURL: String
-    email: String
+    id: string
+    fullName: string
+    givenName: string
+    familyName: string
+    imageURL: string
+    email: string
 }
